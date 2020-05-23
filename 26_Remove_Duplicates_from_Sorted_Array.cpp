@@ -29,6 +29,22 @@ public:
  * EXAMPLE:
  * 1. while (nums[i] == nums[++i]); you will overflow;
  * 2. while (i < nums.size() && nums[i] == nums[++i]); you can not make i self-add to 'i >= nums.size()';
+ * 
+ * all in all:
+ * In 3sum:
+ * while (left < right && nums[left] == nums[++left]);
+ * > 1. break inner-while=loop, for 'nums[left] != nums[++left]', this is the next 'left' we need to compare
+ * > 2. break inner-while=loop, for 'left < right', this will end both inner-while-loop and outer-while-loop !
+ *      This is triggered by last '++left'.
+ * 
+ * In this:
+ * while (i < nums.size() && nums[i] == nums[++i]);
+ * 1. Last '++i' have no idea to trigger 'i < nums.size()' to break outer-while-loop !
+ * 
+ * Summary:
+ * 1. '++i' must be trigger in all the round of loop, and last '++i' must trigger 
+ *    the end of inner-loop(the first condition not satisfied)  and the outer-loop(also, the first condition not satisfied) !
+ * 2. what's more, 'nums[++i]' can not be overflow !
 */
 
 
