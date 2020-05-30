@@ -80,3 +80,34 @@ public:
         return answer;
     }
 };
+
+
+/**
+ * 反转 answer 进行遍历，何等恐怖。具体解释看 590 的题解
+ */
+
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        stack<TreeNode *> node_stack;
+        vector<int> answer;
+
+        if (root)
+            node_stack.push(root);
+
+        TreeNode *curr = nullptr;
+        while (!node_stack.empty()) {
+            curr = node_stack.top();
+            node_stack.pop();
+            answer.push_back(curr->val);
+            if (curr->left)
+                node_stack.push(curr->left);
+            if (curr->right)
+                node_stack.push(curr->right);
+
+        }   // end of while
+
+        reverse(answer.begin(), answer.end());
+        return answer;
+    }
+};
