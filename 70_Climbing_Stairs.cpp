@@ -16,3 +16,17 @@ public:
         return f3;
     }
 };
+
+
+/* recursion */
+class Solution {
+public:
+    int climbStairs(int n) {
+        // terim
+        if (n <= 2) {
+            return n;
+        }
+
+        return climbStairs(n - 1) + climbStairs(n - 2);
+    }
+};
