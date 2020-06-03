@@ -70,3 +70,38 @@ public:
 
 };
 // 有空看看这个https://leetcode-cn.com/problems/binary-tree-inorder-traversal/solution/yan-se-biao-ji-fa-yi-chong-tong-yong-qie-jian-ming/
+
+
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        stack<TreeNode *> recusion_stack;
+        vector<int> answer;
+
+        // 既然是我们进行压栈，那么在压栈前检查要压入的栈帧是否有效是更好的行为，甚至是必须的，因为你用 nullptr 作为 flag 了
+        // 所以确保这个 flag 不被乱用是你必须做的事情
+        if (root)   
+            recusion_stack.push(root);
+
+        while (!recusion_stack.empty()) {
+            TreeNode *node = recusion_stack.top();
+            recusion_stack.pop();
+            if (node != nullptr) {  // 注意压栈的顺序问题
+                if (node->right)
+                    recusion_stack.push(node->right);
+
+                recusion_stack.push(node);
+                recusion_stack.push(nullptr);   // 这个就可以保证 当 node == nullptr 的时候，recusion.top() 一定存在
+
+                if (node->left)
+                    recusion_stack.push(node->left);
+
+            } else {
+                answer.push_back(recusion_stack.top()->val);
+                recusion_stack.pop();
+            }
+
+        }
+        return answer;
+    }
+};

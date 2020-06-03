@@ -54,3 +54,32 @@ public:
  *    stack 的这种 暂定里程碑\当前里程碑 的思想很值得借鉴，将里程碑动态的进行维护在 stack 里面！
  * 
 */
+
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        int max_area = 0;
+        stack<int> min_stack;
+        min_stack.push(-1);
+        for (int index = 0; index < heights.size(); index++) {
+            while (min_stack.top() != -1 && heights[index] <= heights[min_stack.top()]) {
+                int H = heights[min_stack.top()];
+                min_stack.pop();
+                int L = index - min_stack.top() - 1;
+                int area = H * L;
+                max_area = max(max_area, area);
+            }
+
+            min_stack.push(index);
+        }
+
+        while (min_stack.top() != -1) {
+            int H = heights[min_stack.top()];
+            min_stack.pop();
+            int L = heights.size() - min_stack.top() - 1;
+            int area = H * L;
+            max_area = max(max_area, area);
+        }
+        return max_area;
+    }
+};
