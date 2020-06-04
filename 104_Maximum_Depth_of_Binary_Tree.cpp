@@ -7,6 +7,7 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+// 104_Maximum_Depth_of_Binary_Tree
 class Solution {
 public:
     int maxDepth(TreeNode* root) {
@@ -27,4 +28,16 @@ public:
         }
     }
 
+};
+
+/* better version */
+// 104_Maximum_Depth_of_Binary_Tree
+class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        if (!root)
+            return 0;
+
+        return max(maxDepth(root->left) + 1, maxDepth(root->right) + 1);
+    }
 };
