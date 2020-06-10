@@ -21,7 +21,7 @@ public:
                     while (left < right && nums[right] == nums[--right]);   // 'right' can not self-add in for-loop !
                 else {
                     answer.push_back(vector<int> {nums[target], nums[left], nums[right]});
-                    while (left < right && nums[left] == nums[++left]);
+                    while (left < right && nums[left] == nums[++left]);     // search next right answer and make while-loop break
                     while (left < right && nums[right] == nums[--right]);
                 }
 
