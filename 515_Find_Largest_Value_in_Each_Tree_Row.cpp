@@ -40,3 +40,30 @@ public:
 };
 
 /* another BFS version */
+class Solution {
+public:
+    vector<int> largestValues(TreeNode* root) {
+        vector<int> answer;
+
+        queue<TreeNode*> wait_queue;
+        if (root)
+            wait_queue.push(root);
+
+        while(!wait_queue.empty()) {
+            int levelSize = wait_queue.size();	// this line
+            int levelMax = INT_MIN;
+            for(int i = 0; i < levelSize; i++) {	
+                TreeNode* curNode = wait_queue.front(); // and this line, 这两行实现了，知道单层 queue 有多少的需要进行遍历，更好的控制了进入 wait_queue 跟离开的情况，使过程更为可控
+                wait_queue.pop();
+                levelMax = max(curNode->val, levelMax);
+
+                if(curNode->left) 
+                    wait_queue.push(curNode->left);
+                if(curNode->right) 
+                    wait_queue.push(curNode->right);
+            }
+            answer.push_back(levelMax);
+        }
+        return answer;
+    }
+};

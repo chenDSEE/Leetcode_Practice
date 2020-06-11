@@ -1,3 +1,4 @@
+/* DFS */
 class Solution {
 public:
     vector<vector<int>> permute(vector<int>& nums) {
@@ -54,5 +55,75 @@ public:
             swap(nums[index], nums[curr_used]);     // 将 本次将使用的坑位 跟 本次要尝试的数字 进行交换（还原，准备迭代 本次要尝试的数字）
         }
 
+    }
+};
+
+/* BFS */
+class Solution {
+public:
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<vector<int>> answer;
+        queue<pair<vector<int>, unordered_set<int>>> wait_queue; // inter_vector -> is_used
+
+        if (nums.size() > 0)
+            wait_queue.push({vector<int> {}, unordered_set<int> {}});
+        
+        while (!wait_queue.empty()) {
+            vector<int> curr_vec = wait_queue.front().first;
+            unordered_set<int> curr_set = wait_queue.front().second;
+            wait_queue.pop();
+
+            if (curr_vec.size() == nums.size()) {
+                answer.emplace_back(curr_vec);
+                continue;
+            }
+            
+            for (int check : nums) {
+                if (curr_set.count(check) == 0) {
+                    curr_vec.emplace_back(check);
+                    curr_set.insert(check);
+
+                    wait_queue.push({curr_vec, curr_set});
+
+                    curr_vec.pop_back();
+                    curr_set.erase(check);
+                }
+            }
+        }   // end of while
+
+        return answer;
+    }
+};
+
+/* BFS better version */
+class Solution {
+public:
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<vector<int>> answer;
+        queue<pair<vector<int>, int>> wait_queue; // inter_answer -> curr_used
+
+        if (nums.size() > 0)
+            wait_queue.push({nums, 0});
+
+        while (!wait_queue.empty()) {
+            vector<int> curr_vec = wait_queue.front().first;
+            int curr_use = wait_queue.front().second;
+            wait_queue.pop();
+
+            if (curr_use == nums.size() - 1) {
+                answer.emplace_back(curr_vec);
+                continue;
+            }
+
+            for (int check = curr_use; check < nums.size(); check++) {
+                std::swap(curr_vec[check], curr_vec[curr_use]);
+                wait_queue.push({curr_vec, curr_use + 1});
+                std::swap(curr_vec[check], curr_vec[curr_use]);
+            }
+
+
+        }   // end of while
+
+        return answer;
     }
 };

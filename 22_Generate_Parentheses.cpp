@@ -1,4 +1,4 @@
-/* DFS */
+/* DFS - Recusion_Version */
 class Solution {
 public:
     vector<string> generateParenthesis(int n) {
@@ -19,6 +19,38 @@ public:
         if (right < left) {
             helper(answer, tmp + ')', left, right + 1, n);
         }
+    }
+};
+
+/* DFS - Non_Recusion_Version */
+class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        stack<pair<string, int>> wait_stack; // inter_srting -> left_count
+        vector<string> answer;
+        
+        if (n >= 0)
+            wait_stack.push({"", 0});
+        
+        while (!wait_stack.empty()) {
+            string curr_str = wait_stack.top().first;
+            int left = wait_stack.top().second;
+            int right = curr_str.size() - left;
+            wait_stack.pop();
+
+            if (curr_str.size() >= 2 * n) {
+                answer.emplace_back(curr_str);
+                continue;
+            }
+
+            if (left < n)
+                wait_stack.push({curr_str + '(', left + 1});
+            if (right < n && right < left)
+                wait_stack.push({curr_str + ')', left});
+
+        } // end of while
+
+        return answer;
     }
 };
 
