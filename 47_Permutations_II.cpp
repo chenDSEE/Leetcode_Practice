@@ -1,3 +1,4 @@
+/* DFS Version */
 class Solution {
 public:
     vector<vector<int>> permuteUnique(vector<int>& nums) {
@@ -139,5 +140,48 @@ public:
             }
             index = check - 1;
         }
+    }
+};
+
+class Solution {
+public:
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        vector<vector<int>> answer;
+        vector<int> one;
+        vector<bool> level_mark(nums.size(), false);
+        std::sort(nums.begin(), nums.end());
+
+        generate_permute_unique(answer, level_mark, one, 0, nums);
+
+        return answer;
+    }
+
+    void generate_permute_unique(vector<vector<int>> &answer, vector<bool> &level_mark,
+        vector<int> &one, int start, const vector<int> &nums)
+    {
+        if (one.size() >= nums.size()) {
+            answer.emplace_back(one);
+            return ;
+        }
+
+        for (int index = 0; index < nums.size(); index++) {
+            if (level_mark[index] == true
+                || (index > 0 && nums[index] == nums[index - 1] && level_mark[index - 1] == false))
+            {
+                continue;
+            }
+
+            one.emplace_back(nums[index]);
+            // 相同数字之间的 true 是用来标记层次的；
+            // 整个 level_mark 中的则是针对所有数字，标记谁被用过了
+            level_mark[index] = true;
+
+            generate_permute_unique(answer, level_mark, one, start + 1, nums);
+
+            level_mark[index] = false;
+            one.pop_back();
+        }
+
+        return ;
     }
 };

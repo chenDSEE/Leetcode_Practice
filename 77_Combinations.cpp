@@ -1,3 +1,4 @@
+/* DFS Version */
 class Solution {
 public:
     vector<vector<int>> combine(int n, int k) {
@@ -22,5 +23,36 @@ public:
         }
 
         return ;
+    }
+};
+
+/* BFS Version */
+class Solution {
+public:
+    vector<vector<int>> combine(int n, int k) {
+        queue<pair<vector<int>, int>> wait_queue;   // vector<int> one  -->  start
+        vector<vector<int>> answer;
+
+        if (n >= k)
+            wait_queue.push({vector<int> {}, 1});
+
+        while (!wait_queue.empty()) {
+            vector<int> curr_vec = wait_queue.front().first;
+            int start = wait_queue.front().second;
+            wait_queue.pop();
+
+            if (curr_vec.size() >= k) {
+                answer.emplace_back(curr_vec);
+                continue;
+            }
+
+            for (int num = start; num <= n; num++) {
+                curr_vec.emplace_back(num);
+                wait_queue.push({curr_vec, num + 1});
+                curr_vec.pop_back();
+            }
+        }   // end of while
+
+        return answer;
     }
 };

@@ -55,3 +55,25 @@ public:
         return answer;
     }
 };
+
+/* index_cnt is not need */
+class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        vector<vector<string>> answer;
+        unordered_map<string, int> index_map; // sorted_string -> answer_index
+
+        for (string check : strs) {
+            string tmp = check;
+            sort(tmp.begin(), tmp.end());
+            if (index_map.count(tmp) == 0) {
+                answer.push_back(vector<string> {});
+                index_map[tmp] = answer.size() - 1;
+            }
+
+            answer[index_map[tmp]].emplace_back(check);
+        }
+
+        return answer;
+    }
+};

@@ -1,57 +1,51 @@
 class Solution {
-private:
-    unordered_set<int> column;
-    unordered_set<int> left;
-    unordered_set<int> right;
 public:
     vector<vector<string>> solveNQueens(int n) {
         vector<vector<string>> answer;
-        vector<int> one;
-        solveNQueens_split(answer, one, n);
+        vector<int> queen_pos;
+        solve_n_queens_split(answer, queen_pos, n);        
         return answer;
     }
 
-    void solveNQueens_split(vector<vector<string>> &answer, vector<int> &one, int n) {
-        int row = one.size();
-        // trem
-        if (row == n) {
-            draw_answer(answer, one);
+    void solve_n_queens_split(vector<vector<string>> &answer, vector<int> &queen_pos, int n) {
+        if (queen_pos.size() >= n) {
+            draw_queen(answer, queen_pos);
             return ;
         }
 
-        // drill
-        for (int curr_col = 0; curr_col < n; curr_col++) {
-            if (is_valid_queen(row, curr_col)) {
+        int y = queen_pos.size() - 1;
+        for (int x = 0; x < n; x++) {
+            if (column.count(x) == 0 && left.count(x + y) == 0 && right.count(y - x) == 0) {
+                queen_pos.emplace_back(x);
+                column.insert(x);
+                left.insert(x + y);
+                right.insert(y - x);
 
-                one.push_back(curr_col);
-                column.insert(curr_col);
-                left.insert(row + curr_col);
-                right.insert(row - curr_col);
+                solve_n_queens_split(answer, queen_pos, n);
 
-                solveNQueens_split(answer, one, n);
-
-                one.pop_back();
-                column.erase(curr_col);
-                left.erase(row + curr_col);
-                right.erase(row - curr_col);
+                queen_pos.pop_back();
+                column.erase(x);
+                left.erase(x + y);
+                right.erase(y - x);
             }
         }
 
+        return ;
     }
 
-    void draw_answer(vector<vector<string>> &answer, const vector<int> &one) {
-        string s_tmp(one.size(), '.');
-        vector<string> tmp;
-        for (int row = 0; row < one.size(); row++) {
-            s_tmp[one[row]] = 'Q';
-            tmp.push_back(s_tmp);
-            s_tmp[one[row]] = '.';
+private:
+    unordered_set<int> column;
+    unordered_set<int> left;    // y + x
+    unordered_set<int> right;   // y - x
+    
+    void draw_queen(vector<vector<string>> &answer, vector<int> &queen_pos) {
+        answer.emplace_back(vector<string> {});
+        string tmp(queen_pos.size(), '.');
+        for (int pos : queen_pos) {
+            tmp[pos] = 'Q';
+            answer.back().emplace_back(tmp);
+            tmp[pos] = '.';
         }
 
-        answer.push_back(tmp);
-    }
-
-    bool is_valid_queen(int row, int col) {
-        return (column.count(col) == 0 && left.count(row + col) == 0 && right.count(row - col) == 0);
     }
 };
