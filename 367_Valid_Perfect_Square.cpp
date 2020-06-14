@@ -4,7 +4,7 @@ public:
         long left = 1;
         long right = num;
         while (left <= right) {
-            long mid = (left + right) >> 1;
+            long mid = left + ((right - left) >> 1);    // mid = left/2 + right/2
             long tmp = mid * mid;
             if (tmp == num)
                 return true;
