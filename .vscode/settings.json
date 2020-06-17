@@ -1,0 +1,10 @@
+{
+	"files.associations": {
+		"*.log.*": "log",
+		"*.txt": "log",
+		"*.exp": "log",
+		"Untitled-[0-9]": "log",
+		"functional": "cpp",
+		"vector": "cpp"
+	}
+}

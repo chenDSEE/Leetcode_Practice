@@ -51,4 +51,22 @@ public:
  *    to be higher. Thus, after evaluating that widest container, skip lines at both 
  *    ends that don't support a higher height. Then evaluate that new container we 
  *    arrived at. Repeat until there are no more possible containers left.
+ * 2. 你要留意一下：为什么要用两个指针？为什么要交替移动？
+ *    一个指针是用来记录当前最大值，那自然是让另一个指针来寻找下一个更大的高度啦
+ *    而且一定要左右交替！问题是让我们容积最大，而不是最大高度，更高的高度并不代表面积更大的，
+ *    你仍然要检查实际容积大小！
+*/
+
+
+/**
+ * S = W * H
+ * 
+ * 1. 为什么最开始的方案要用两层循环？
+ *    因为 W，H 都是没有规律的，没有任何的单调性可言，所以只能扫描全部 W 跟 H 的组合，
+ *    然后找出最大的 S。
+ * 
+ * 2. 为什么 W 的单调性能减去一层循环？
+ *    因为发现了规律。首先，我们的枚举方式，仅仅枚举没有任何单调规律的 H，而在循环的
+ *    过程中，W 是单调减小的，这也就是为什么能够减少一层循环的主要原因
+ * 
 */
