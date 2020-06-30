@@ -33,17 +33,37 @@ public:
 };
 
 
-// ???
+/* only initization one point */
 class Solution {
 public:
     int uniquePathsWithObstacles(vector<vector<int> > &obstacleGrid) {
         int m = obstacleGrid.size() , n = obstacleGrid[0].size();
-        vector<vector<int>> dp(m+1,vector<int>(n+1,0));
+        vector<vector<int>> dp(m+1,vector<int>(n+1,0)); // 左边、上边多留一个空行作为初始情况
         dp[0][1] = 1;
         for(int i = 1 ; i <= m ; ++i)
             for(int j = 1 ; j <= n ; ++j)
-                if(!obstacleGrid[i-1][j-1])
+                if(!obstacleGrid[i-1][j-1]) // 因为空行的缘故，要进行一定程度的偏移
                     dp[i][j] = dp[i-1][j]+dp[i][j-1];
         return dp[m][n];
+    }
+};
+
+/* simplify version */
+class Solution {
+public:
+    int uniquePathsWithObstacles(vector<vector<int> > &obstacleGrid) {
+        vector<int> dp_status(obstacleGrid[0].size() + 1, 0);   // 多预留一个空格给 col - 1, 但是就过程中，这个空格不使用
+        dp_status[1] = 1;   // 仅仅作为初始情况
+        for (int row = 0; row < obstacleGrid.size(); row++) {
+            for (int col = 1; col < dp_status.size(); col++) {
+                if (obstacleGrid[row][col - 1] == 0) {
+                    dp_status[col] += dp_status[col - 1];
+                } else {
+                    dp_status[col] = 0; // 这里无法到达，同时更新，保留这个无法到达的点带来的影响
+                }
+            }
+        }
+
+        return dp_status[dp_status.size() - 1];
     }
 };

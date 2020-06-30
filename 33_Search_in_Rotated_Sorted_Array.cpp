@@ -4,7 +4,7 @@ public:
         int left = 0, right = nums.size() - 1;
 
         while (left <= right) {
-            int mid = left + (right - left) >> 1;
+            int mid = left + ((right - left) >> 1);
             if (target == nums[mid])
                 return mid;
 
