@@ -1,73 +1,77 @@
-typedef struct Trie_s Trie_t;
+class Trie {
+public:
+    bool  is_end;
+    Trie *next[26];
 
-typedef struct Trie_s {
-    bool is_end;
-    Trie_t *next[26];
-} Trie_t;
+    Trie() : is_end(false) {
+        memset(next, 0, sizeof(next));
+    }
+
+    void insert(string word) {
+        Trie *node = this;
+        for (char c : word) {
+            if (node->next[c - 'a'] == nullptr)
+                node->next[c - 'a'] = new Trie;
+
+            node = node->next[c - 'a'];
+        }
+
+        node->is_end = true;
+    }
+
+};
 
 class Solution {
 public:
     vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
-        Trie_t *root = new Trie_t;
-        memset(root->next, 0, sizeof(root->next)); 
-        root->is_end = false;
-        for (string w : words) {
-            Trie_t *node = root;
-            for (char c : w) {
-                if (node->next[c - 'a'] == nullptr) {
-                    node->next[c - 'a'] = new Trie_t;
-                    memset(node->next[c - 'a'], 0, sizeof(Trie_t)); 
-                    node->next[c - 'a']->is_end = false;
-                }
+        vector<string> answer;
 
-                node = node->next[c - 'a'];
-            }
-            node->is_end = true;
+        // create and init Trie
+        Trie *root = new Trie;
+        for (string w : words) {
+            root->insert(w);
         }
 
-        vector<string> answer;
+        // search in each board[x][y]
         for (int x = 0; x < board.size(); x++) {
             for (int y = 0; y < board[x].size(); y++) {
-                DFS_search(board, root, "", x, y, answer);
+                search_word(board, answer, "", root, x, y);
             }
         }
 
         return answer;
     }
 
-private:
-    
-
-    void DFS_search(vector<vector<char>>& board, Trie_t *node, string curr_str, 
-                    int x, int y, vector<string> &answer)
+    void search_word(vector<vector<char>> &board, vector<string> &answer, string curr, Trie *node, int x, int y)
     {
         if (node->is_end == true) {
-            answer.emplace_back(curr_str);
+            answer.emplace_back(curr);
             node->is_end = false;
             return ;
         }
-        
-        if (x < 0 || x >= board.size() || y < 0 || y >= board[x].size()
-            || board[x][y] == '#')
-        {
+
+        // check safty and had_traveled
+        if (x < 0 || x >= board.size() || y < 0 || y >= board[x].size() || board[x][y] == '#')
             return ;
-        }
 
         char tmp = board[x][y];
-        node = node->next[tmp - 'a'];
-        if (node == nullptr)
+        // only pass next Trie's node to new level of search. No need to check prefix from root to curr's end!(save time)
+        // OR when board is very large, you will have to check from root for so many time unnecessary
+        node = node->next[tmp - 'a']; 
+        if (node == nullptr)    // check prefix
             return ;
+        
 
-        curr_str += tmp;
-
+        curr += tmp;
         board[x][y] = '#';
-        DFS_search(board, node, curr_str, x + 1, y, answer);
-        DFS_search(board, node, curr_str, x - 1, y, answer);
-        DFS_search(board, node, curr_str, x, y + 1, answer);
-        DFS_search(board, node, curr_str, x, y - 1, answer);
+        for (int step = 0; step < 4; step++) {
+            search_word(board, answer, curr, node, x + move_x[step], y + move_y[step]);
+        }
         board[x][y] = tmp;
     }
-
+private:
+    int move_x[4] = {1, -1, 0, 0};
+    int move_y[4] = {0,  0, 1, -1};
 };
 
 
