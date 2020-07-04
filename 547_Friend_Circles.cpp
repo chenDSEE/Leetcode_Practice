@@ -86,3 +86,74 @@ public:
         return circle_union.get_size();
     }
 };
+
+
+// heap version
+class union_set {
+private:
+    int  num;
+    int *sub_size;
+    int *parent_record;
+public:
+
+    union_set(int n) : num(n) {
+        parent_record = new int[n];
+        sub_size = new int[n];
+        for (int i = 0; i < num; i++) {
+            parent_record[i] = i;
+            sub_size[i] = 1;
+        }
+    }
+
+    ~union_set(){
+        delete [] parent_record;
+        delete [] sub_size;
+    }
+
+    void merge_union(int one, int two) {
+        int root_one = find_final_parent(one);
+        int root_two = find_final_parent(two);
+        if (root_one == root_two)
+            return ;
+
+        if (sub_size[root_one] > sub_size[root_two]) {
+            parent_record[root_two] = root_one;
+            sub_size[root_one] += sub_size[root_two];
+
+        } else {
+            parent_record[root_one] = root_two;
+            sub_size[root_two] += sub_size[root_one]; 
+        }
+
+        num--;
+    }
+
+    int find_final_parent(int me) {
+        while (parent_record[me] != me) {
+            parent_record[me] = parent_record[parent_record[me]];
+            me = parent_record[me];
+        }
+
+        return me;
+    }
+
+    int get_size() {
+        return num;
+    }
+};
+
+class Solution {
+public:
+    int findCircleNum(vector<vector<int>>& M) {
+        union_set circle_union(M.size());
+
+        for (int x = 0; x < M.size(); x++) {
+            for (int y = 0; y < M[x].size(); y++) {
+                if (M[x][y] == 1)
+                    circle_union.merge_union(x, y);
+            }
+        }
+
+        return circle_union.get_size();
+    }
+};
