@@ -5,6 +5,11 @@
 		"*.exp": "log",
 		"Untitled-[0-9]": "log",
 		"functional": "cpp",
-		"vector": "cpp"
+		"vector": "cpp",
+		"array": "cpp",
+		"string_view": "cpp",
+		"initializer_list": "cpp",
+		"utility": "cpp",
+		"system_error": "cpp"
 	}
 }
