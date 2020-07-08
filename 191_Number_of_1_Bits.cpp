@@ -19,12 +19,12 @@ public:
 class Solution {
 public:
     int hammingWeight(uint32_t n) {
-        int cnt = 0;;
-        while (n > 0) {
+        int answer = 0;
+        while (n) {
             n = n & (n - 1);
-            cnt++;
+            answer++;
         }
 
-        return cnt;
+        return answer;
     }
 };
