@@ -27,6 +27,7 @@ public:
     }
 };
 
+/* Monotonic Stack */
 /**
  * S = H * W
  * 
@@ -55,31 +56,37 @@ public:
  * 
 */
 
+// Monotonic stack
 class Solution {
 public:
     int largestRectangleArea(vector<int>& heights) {
+        stack<int> monotonic_stack; // record index of heights
+        monotonic_stack.push(-1);   // as mark flag
         int max_area = 0;
-        stack<int> min_stack;
-        min_stack.push(-1);
+
+        // push each bound into monotonic_stack
         for (int index = 0; index < heights.size(); index++) {
-            while (min_stack.top() != -1 && heights[index] <= heights[min_stack.top()]) {
-                int H = heights[min_stack.top()];
-                min_stack.pop();
-                int L = index - min_stack.top() - 1;
+            // '<=' for only record most recent index
+            while (monotonic_stack.top() != -1 && heights[index] <= heights[monotonic_stack.top()]) {   // new smaller
+                int H = heights[monotonic_stack.top()];
+                monotonic_stack.pop();
+                int L = index - 1 - monotonic_stack.top();
                 int area = H * L;
-                max_area = max(max_area, area);
+                max_area = max_area > area ? max_area : area;
             }
 
-            min_stack.push(index);
+            monotonic_stack.push(index);
         }
 
-        while (min_stack.top() != -1) {
-            int H = heights[min_stack.top()];
-            min_stack.pop();
-            int L = heights.size() - min_stack.top() - 1;
+        // clear monotonic_stack
+        while (monotonic_stack.top() != -1) {
+            int H = heights[monotonic_stack.top()];
+            monotonic_stack.pop();
+            int L = heights.size() - 1 - monotonic_stack.top();
             int area = H * L;
-            max_area = max(max_area, area);
+            max_area = max_area > area ? max_area : area;
         }
+
         return max_area;
     }
 };
