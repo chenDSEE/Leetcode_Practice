@@ -45,7 +45,9 @@ public:
 
             if (left < n)
                 wait_stack.push({curr_str + '(', left + 1});
-            if (right < n && right < left)
+            if (right < n && right < left)  
+                // right < n 这一点其实通过跨层的 right < left 来实现了
+                // 你每一层的 one.size() < left 这点是必然的
                 wait_stack.push({curr_str + ')', left});
 
         } // end of while
@@ -78,6 +80,38 @@ public:
             if (right < n && right < left) {
                 wait_queue.push({curr + ')', left});
             }
+        }   // end of while
+
+        return answer;
+    }
+};
+
+// BFS pointer version
+class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        queue<pair<int, string>> wait_queue;    // left_num -> inter_status
+        vector<string> answer;
+
+        if (n >= 0)
+            wait_queue.push(make_pair(0, ""));
+
+        while (!wait_queue.empty()) {
+            int left_cnt = wait_queue.front().first;
+            string *one = &(wait_queue.front().second);
+            int right_cnt = one->size() - left_cnt;
+
+            if (one->size() == 2 * n) {
+                answer.emplace_back(*one);
+
+            } else {
+                if (left_cnt < n)
+                    wait_queue.push(make_pair(left_cnt + 1, *one + "("));
+                if (right_cnt < left_cnt)
+                    wait_queue.push(make_pair(left_cnt, *one + ")"));
+            }
+
+            wait_queue.pop();
         }   // end of while
 
         return answer;

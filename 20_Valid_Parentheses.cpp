@@ -24,3 +24,30 @@ public:
         return tmp.empty();
     }
 };
+
+// 剪枝
+class Solution {
+public:
+    bool isValid(string s) {
+        if (s.size() & 1)
+            return false;
+
+        stack<char> record;
+        for (int index = 0; index < s.size(); index++) {
+            if (s[index] == '(')
+                record.push(')');
+            else if (s[index] == '[')
+                record.push(']');
+            else if (s[index] == '{')
+                record.push('}');
+            else {
+                if (record.empty() || record.top() != s[index])
+                    return false;
+
+                record.pop();
+            }
+        }
+
+        return record.empty();
+    }
+};
