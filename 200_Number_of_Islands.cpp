@@ -74,3 +74,76 @@ public:
         return ;
     }
 };
+
+// Disjoint Set Union version(DSU)
+class union_set {
+private:
+    int  num;
+    int *parent;
+
+public:
+    union_set(int n) : num(n) {
+        parent = new int[n];
+        for (int i = 0; i < num; i++) {
+            parent[i] = i;
+        }
+    }
+
+    ~union_set() {
+        delete [] parent;
+    }
+
+    int find_fin_parent(int me) {
+        while (me != parent[me]) {
+            parent[me] = parent[parent[me]];
+            me = parent[me];
+        }
+
+        return me;
+    }
+
+    void merge_up(int one, int two) {
+        int root_one = find_fin_parent(one);
+        int root_two = find_fin_parent(two);
+        if (root_one == root_two)
+            return ;
+
+        parent[root_two] = root_one;
+        num--;
+    }
+
+    int get_num() {
+        return num;
+    }
+    
+    void adjust() {
+        num--;
+    }
+};
+
+
+class Solution {
+public:
+    int numIslands(vector<vector<char>>& grid) {
+        if (grid.size() == 0)
+            return 0;
+
+        int X = grid.size(), Y = grid[0].size();
+        union_set island_set(X * Y);
+
+        for (int x = 0; x < X; x++) {
+            for (int y = 0; y < Y; y++) {
+                if (grid[x][y] == '0') {
+                    island_set.adjust();
+                } else {
+                    if (y < Y - 1 && grid[x][y + 1] == '1')
+                        island_set.merge_up(x * Y + y, x * Y + y + 1);
+                    if (x < X - 1 && grid[x + 1][y] == '1')
+                        island_set.merge_up(x * Y + y, (x + 1) * Y + y);
+                }
+            }
+        }
+
+        return island_set.get_num();
+    }
+};

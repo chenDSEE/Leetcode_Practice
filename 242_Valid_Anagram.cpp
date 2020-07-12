@@ -10,6 +10,57 @@ public:
     }
 };
 
+// 手写归并排序
+class Solution {
+public:
+    bool isAnagram(string s, string t) {
+        if (s.size() != t.size())
+            return false;
+
+        tmp.resize(s.size());
+        merge_srot(s, 0, s.size() - 1);
+        merge_srot(t, 0, t.size() - 1);
+        
+        return s == t;
+    }
+
+private:
+    vector<char> tmp;
+
+private:
+    void merge_srot(string &buf, int left, int right) {
+        if (left >= right)
+            return ;
+
+        int mid = (left + right) >> 1;
+        merge_srot(buf, left, mid);
+        merge_srot(buf, mid + 1, right);
+
+        merge_up(buf, left, mid, right);
+    }
+
+    void merge_up(string &buf, int left, int mid, int right) {
+        int cnt = 0;
+        int left_pos = left, right_pos = mid + 1;
+        while (left_pos <= mid && right_pos <= right) {
+            tmp[cnt++] = buf[left_pos] <= buf[right_pos] ? buf[left_pos++] : buf[right_pos++];
+        }
+
+        while (left_pos <= mid) {
+            tmp[cnt++] = buf[left_pos++];
+        }
+
+        while (right_pos <= right) {
+            tmp[cnt++] = buf[right_pos++];
+        }
+
+        for (int index = 0; index < right - left + 1; index++) {
+            buf[left + index] = tmp[index];
+        }
+    }
+};
+
+
 /**
  * 我们需要两个计数器数表进行比较吗？实际上不是，因为我们可以用一个计数器表计算 ss 字母的频率，
  * 用 tt 减少计数器表中的每个字母的计数器，然后检查计数器是否回到零。

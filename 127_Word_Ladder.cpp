@@ -77,6 +77,7 @@ public:
     }
 };
 
+/* two-ended BFS */
 /* 双向 BFS */
 // 重点：从左右两边同时开始搜索，相遇即得到答案（所有，return 前是看看自己当前满足变化要求的中间结果，
 //       是不是能在对面的 visited 里面找到，是的话那就是结果）
@@ -167,7 +168,7 @@ public:
 
 
             unordered_set<string> next_set;
-            for (auto it = work_set -> begin(); it != work_set -> end(); it++) {
+            for (auto it = work_set->begin(); it != work_set->end(); it++) {
                 string curr_str = *it;
 
                 for (int index = 0; index < curr_str.size(); index++) {
@@ -197,5 +198,62 @@ public:
         }   // end of while
 
         return 0;
+    }
+};
+
+/* two-ended BFS */
+class Solution {
+public:
+    int minMutation(string start, string end, vector<string>& bank) {
+        unordered_set<string> base(bank.begin(), bank.end());
+        unordered_set<string> start_set, end_set;
+
+        if (base.count(end) == 0)
+            return -1;
+
+        start_set.insert(start);
+        end_set.insert(end);
+        int step = 0;
+        unordered_set<string> *work_set, *check_set;
+        while (!start_set.empty() && !end_set.empty()) {
+            if (start_set.size() > end_set.size()) {
+                work_set = &end_set;
+                check_set = &start_set;
+
+            } else {
+                work_set = &start_set;
+                check_set = &end_set;
+            }
+
+            unordered_set<string> next_set;
+            for (auto it = work_set->begin(); it != work_set->end(); it++) {
+                string curr = *it;
+                for (int index = 0; index < curr.size(); index++) {
+                    char tmp = curr[index];
+
+                    for (char change : "ACGT") {
+                        if (change == tmp)
+                            continue;
+
+                        curr[index] = change;
+                        if (check_set->count(curr) == 1)
+                            return step + 1;
+
+                        if (base.count(curr) == 1) {
+                            base.erase(curr);
+                            next_set.insert(curr);                        
+                        }
+                    }
+
+                    curr[index] = tmp;
+                }
+            }
+
+            step++;
+            work_set->swap(next_set);
+
+        }   // end of while
+
+        return -1;
     }
 };

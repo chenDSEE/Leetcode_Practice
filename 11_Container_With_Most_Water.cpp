@@ -14,6 +14,7 @@ public:
 };
 
 
+
 /**
  * Hide Hint:
  * 1. The aim is to maximize the area formed between the vertical lines. 
