@@ -1,3 +1,4 @@
+// 进行 k 次数组右移一位(超时，O(n ^ 2))
 class Solution {
 public:
     void rotate(vector<int>& nums, int k) {
@@ -12,53 +13,53 @@ public:
     }
 };
 
-
-
-
+// 直接算出每一个元素的新坐标，然后交换临时数组
 class Solution {
 public:
     void rotate(vector<int>& nums, int k) {
+        k = k % nums.size();
         vector<int> tmp(nums.size());
-        int i = 0;
-        for (i = 0; i < (k % nums.size()); i++) {
-            tmp[i] = nums[nums.size() - (k % nums.size()) + i];
-        }
 
-        for (int j = 0; i < nums.size(); j++, i++) {
-            tmp[i] = nums[j];
+        for (int cnt = 0; cnt < nums.size(); cnt++) {
+            tmp[(cnt + k) % nums.size()] = nums[cnt];
         }
 
         swap(tmp, nums);
     }
 };
 
-
+// 逐个顶替掉
 class Solution {
 public:
     void rotate(vector<int>& nums, int k) {
         k = k % nums.size();
-        int cur = 0;
-        int next = 0;
-        int tmp = 0;
-        int prev = 0;
+        
+        if (k < 0)
+            k += nums.size();
+
+        int next_pos = 0;
+
         for (int start = 0, cnt = 0; cnt < nums.size(); start++) {
-            cur = start;         
-            prev = nums[start];
-            do {          
+            int curr_pos = start;
+            int prev_val = nums[start];
+            do {
+                // find next index position
                 // one replacement, you take prev to replace nums[next],
                 // therefore you have to record prev and nums[next] !
-                next = (cur + k) % nums.size();
-                tmp = nums[next];
-                nums[next] = prev;
+                next_pos = (curr_pos + k) % nums.size();
 
-                // for next round
-                cur = next;
-                prev = tmp;
+                // insert prev_val and update prev_val
+                int tmp = nums[next_pos];
+                nums[next_pos] = prev_val;
+                prev_val = tmp;
+
+                // update for next round
+                curr_pos = next_pos;
 
                 // record for the end of for-loop
                 cnt++;
 
-            } while(cur != start);
+            } while (next_pos != start); // comes across with begin
         }
     }
 };
