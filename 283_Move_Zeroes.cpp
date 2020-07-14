@@ -27,15 +27,15 @@
 class Solution {
 public:
     void moveZeroes(vector<int>& nums) {
-        for (int cur = 0, first_zero_position = 0; cur < nums.size(); cur++) {
-            if (0 != nums[cur]) {
-                swap(nums[first_zero_position], nums[cur]);
-                first_zero_position++;
+        int swap_pos = 0;
+        for (int index = 0; index < nums.size(); index++) {
+            if (nums[index] != 0) {
+                std::swap(nums[index], nums[swap_pos]);
+                swap_pos++;
             }
         }
     }
 };
-
 // 既然你从原理上发现，交换，那你就想清楚什么时候才交换
     // 要交换也就意味着，序列不对了，要发生改变
     // 不交换，也就意味着啥事都没有，可以不用别的操作了

@@ -96,6 +96,7 @@ public:
  * 我们可以先用计数器表计算 ss，然后用 tt 减少计数器表中的每个字母的计数器。
  * 如果在任何时候计数器低于零，我们知道 tt 包含一个不在 ss 中的额外字母，并立即返回 FALSE。
 */
+/* hash array */
 class Solution {
 public:
     bool isAnagram(string s, string t) {

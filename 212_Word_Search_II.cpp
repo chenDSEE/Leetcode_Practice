@@ -1,3 +1,5 @@
+// 重点：Trie 的简化，避免重复搜索
+
 class Trie {
 public:
     bool  is_end;
@@ -61,7 +63,7 @@ public:
         if (node == nullptr)    // check prefix
             return ;
         
-
+        // 要么是采用 set 来进行判重 record，再不然就是通过打上标记的方式来去重
         curr += tmp;
         board[x][y] = '#';
         for (int step = 0; step < 4; step++) {
@@ -72,6 +74,96 @@ public:
 private:
     int move_x[4] = {1, -1, 0, 0};
     int move_y[4] = {0,  0, 1, -1};
+};
+
+// comment version
+class Trie {
+
+public:
+    Trie *word_record[26];
+    bool  is_end;
+
+    Trie() : is_end(false) { 
+        memset(word_record, 0, sizeof(word_record));
+    }
+
+    void insert(const string &s) {
+        Trie *node = this;
+        for (char c : s) {
+            if (node->word_record[c - 'a'] == NULL) {
+                node->word_record[c - 'a'] = new Trie;
+            }
+
+            node = node->word_record[c - 'a'];
+        }
+
+        node->is_end = true;
+    }
+
+};
+
+
+
+class Solution {
+public:
+    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+        vector<string> answer;
+        if (board.size() == 0)
+            return answer;
+
+        Trie dict;
+        for (string w : words) {
+            dict.insert(w);
+        }
+
+        row = board.size(), col = board[0].size();
+        for (int y = 0; y < row; y++) {
+            for (int x = 0; x < col; x++) {
+                DFS_search(answer, board, &dict, "", y, x);
+            }
+        }
+
+        return answer;
+    }
+
+private:
+    int row, col;
+    int move[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    
+    void DFS_search(vector<string> &answer, vector<vector<char>> &board, Trie *curr_node, string one, int y, int x) {
+        // last level match and this level is end ==> found one answer
+        if (curr_node->is_end) {
+            answer.emplace_back(one);
+            curr_node->is_end = false;
+            return ;
+        }
+
+        // check safety for this level
+        if (y < 0 || y >= row || x < 0 || x >= col || board[y][x] == '#') {
+            return ;
+        }
+
+        // check board[y][x] whether is Trie ?
+        char tmp = board[y][x];
+        if (curr_node->word_record[tmp - 'a'] == nullptr) {
+            return ;
+        }
+        one += tmp;
+
+        // update next Trie node
+        Trie *next_node = curr_node->word_record[tmp - 'a'];
+
+        // mark this node in board
+        board[y][x] = '#';
+
+        // check nearby
+        for (int step = 0; step < 4; step++) {
+            DFS_search(answer, board, next_node, one, y + move[step][0], x + move[step][1]);
+        }
+
+        // revert board for next DFS_search
+        board[y][x] = tmp;
+    }
 };
 
 

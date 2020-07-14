@@ -8,12 +8,14 @@ public:
             return answer;
 
         for (int i = 0; i < nums.size(); i++) {
-            while (!max.empty() && nums[i] > nums[max.back()]) {  // 只要没挖空，我就继续挖
+            // 去掉没有用的小数字
+            while (!max.empty() && nums[i] > nums[max.back()]) {  // 只要没挖空，我就继续挖; 当相同的时候，两个都要保留
                 max.pop_back();
             }
 
             max.push_back(i);
 
+            // window.size() 不可能大于 k !
             if (i - max.front() >= k)
                 max.pop_front();
 
