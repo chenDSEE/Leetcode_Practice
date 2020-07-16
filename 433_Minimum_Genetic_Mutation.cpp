@@ -43,41 +43,105 @@ public:
 class Solution {
 public:
     int minMutation(string start, string end, vector<string>& bank) {
-        queue<string> toVisit;
-        unordered_set<string> dict(bank.begin(), bank.end());
-        int dist = 0;
-        
-        if(!dict.count(end)) return -1;
-        
-        toVisit.push(start);
-        while(!toVisit.empty()) {
-            int n = toVisit.size();
-            for(int i=0; i<n; i++) {
-                string str = toVisit.front();
-                toVisit.pop();
-                if(str==end) return dist;
-                addWord(str, dict, toVisit);
-            }
-            dist++;
+        unordered_set<string> base(bank.begin(), bank.end());
+        queue<string> wait_queue;
+
+        if (base.count(end) == 0) {
+            return -1;
         }
-        return -1;
-        
-    }
-    
-    void addWord(string word, unordered_set<string>& dict, queue<string>& toVisit) {
-        dict.erase(word);
-        for(int i=0; i<word.size(); i++) {
-            char tmp = word[i];
-            for(char c : string("ACGT")) {
-                word[i] = c;
-                if(dict.count(word)) {
-                    toVisit.push(word);
-                    dict.erase(word);
+
+
+        int step = 0;
+        wait_queue.push(start);
+        while (!wait_queue.empty()) {
+            int size = wait_queue.size();
+
+            for (int cnt = 0; cnt < size; cnt++) {
+                string curr = wait_queue.front();
+                wait_queue.pop();
+
+                for (int index = 0; index < curr.size(); index++) {    // for each char in this word
+                    char tmp = curr[index];
+
+                    for (char one : "ACGT") {
+                        if (one != tmp) {
+                            curr[index] = one;
+
+                            if (base.count(curr) == 1) {
+                                base.erase(curr);
+                                wait_queue.push(curr);
+
+                                if (curr == end) {
+                                    return step + 1;
+                                }
+                            }
+                        }
+                    }
+
+                    curr[index] = tmp;  // for next char
                 }
             }
-            word[i] = tmp;
+
+            step++;
         }
+
+        return -1;
     }
 };
 
 /* two-ended BFS */
+class Solution {
+public:
+    int minMutation(string start, string end, vector<string>& bank) {
+        unordered_set<string> base(bank.begin(), bank.end());
+        unordered_set<string> start_set, end_set;
+
+        if (base.count(end) == 0)
+            return -1;
+
+        start_set.insert(start);
+        end_set.insert(end);
+        int step = 0;
+        unordered_set<string> *work_set, *check_set;
+        while (!start_set.empty() && !end_set.empty()) {
+            if (start_set.size() > end_set.size()) {
+                work_set = &end_set;
+                check_set = &start_set;
+
+            } else {
+                work_set = &start_set;
+                check_set = &end_set;
+            }
+
+            unordered_set<string> next_set;
+            for (auto it = work_set->begin(); it != work_set->end(); it++) {
+                string curr = *it;
+                for (int index = 0; index < curr.size(); index++) {
+                    char tmp = curr[index];
+
+                    for (char change : "ACGT") {
+                        if (change == tmp)
+                            continue;
+
+                        curr[index] = change;
+                        if (check_set->count(curr) == 1)
+                            return step + 1;
+
+                        if (base.count(curr) == 1) {
+                            base.erase(curr);
+                            next_set.insert(curr);                        
+                        }
+                    }
+
+                    curr[index] = tmp;
+                }
+            }
+
+            step++;
+            work_set->swap(next_set);
+
+        }   // end of while
+
+        return -1;
+    }
+};

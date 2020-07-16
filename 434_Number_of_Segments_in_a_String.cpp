@@ -12,3 +12,31 @@ public:
         return word_cnt;
     }
 };
+
+
+// Straight Forward
+class Solution {
+public:
+    int countSegments(string s) {
+        int cnt = 0;
+        int index = 0;
+        while (index < s.size()) {
+            while (index < s.size() && s[index] == ' ') {
+                index++;
+            }
+
+            if (index == s.size()) {
+                return cnt;
+            }
+
+            cnt++;
+            while (index < s.size() && s[index] != ' ') {
+                index++;
+            }
+
+            index++;
+        }
+
+        return cnt;
+    }
+};

@@ -11,6 +11,9 @@
 		"initializer_list": "cpp",
 		"utility": "cpp",
 		"system_error": "cpp",
-		"unordered_map": "cpp"
+		"unordered_map": "cpp",
+		"deque": "cpp",
+		"string": "cpp",
+		"*.tcc": "cpp"
 	}
 }

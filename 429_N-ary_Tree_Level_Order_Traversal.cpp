@@ -38,3 +38,35 @@ public:
         }
     }
 };
+
+// BFS Version
+class Solution {
+public:
+    vector<vector<int>> levelOrder(Node* root) {
+        vector<vector<int>> answer;
+        
+        // BFS
+        queue<Node *> wait_queue;
+        if (root != nullptr) {
+            wait_queue.push(root);
+        }
+
+        while (!wait_queue.empty()) {
+            int size = wait_queue.size();
+            vector<int> one;
+            for (int cnt = 0; cnt < size; cnt++) {
+                Node *curr = wait_queue.front();
+                wait_queue.pop();
+
+                one.emplace_back(curr->val);
+                for (auto child : curr->children) {
+                    wait_queue.push(child);
+                }
+            }
+
+            answer.emplace_back(one);
+        }
+
+        return answer;
+    }
+};
