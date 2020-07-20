@@ -1,9 +1,9 @@
 class Solution {
 public:
     string toLowerCase(string str) {
-        for (int index = 0; index < str.size(); index++) {
-            if (str[index] >= 'A' && str[index] <= 'Z') {
-                str[index] += 'a' - 'A';    // good point
+        for (char &c : str) {
+            if (c >= 'A' && c <= 'Z') {
+                c += 'a' - 'A';
             }
         }
 
@@ -29,3 +29,17 @@ public:
         return str;
     }
 };
+
+class Solution {
+public:
+    string toLowerCase(string str) {
+        for (int index = 0; index < str.size(); index++) {
+            if (str[index] >= 'A' && str[index] <= 'Z') {
+                str[index] += 'a' - 'A';    // good point
+            }
+        }
+
+        return str;
+    }
+};
+

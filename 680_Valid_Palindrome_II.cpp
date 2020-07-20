@@ -2,7 +2,6 @@ class Solution {
 public:
     bool validPalindrome(string s) {
         int left = 0, right = s.size() - 1;
-        bool jump = false;
         while (left < right) {
             if (s[left] != s[right]) {
                 return sub_check(s, left + 1, right) || sub_check(s, left, right - 1);
