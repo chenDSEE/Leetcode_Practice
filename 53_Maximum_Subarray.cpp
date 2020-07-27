@@ -29,3 +29,22 @@ public:
         return max_result;
     }
 };
+
+/* 状态压缩 DP */
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        if (nums.size() == 0) {
+            return 0;
+        }
+
+        int prev_sum = nums[0];
+        int max_sum = nums[0];
+        for (int cnt = 1; cnt < nums.size(); cnt++) {
+            prev_sum = max(nums[cnt], prev_sum + nums[cnt]);
+            max_sum = max(max_sum, prev_sum);
+        }
+
+        return max_sum;
+    }
+};

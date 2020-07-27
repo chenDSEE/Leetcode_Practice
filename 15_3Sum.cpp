@@ -1,3 +1,4 @@
+// 重点是去重：target、left、right 三个都要进行去重处理 ！
 class Solution {
 public:
     vector<vector<int>> threeSum(vector<int>& nums) {
