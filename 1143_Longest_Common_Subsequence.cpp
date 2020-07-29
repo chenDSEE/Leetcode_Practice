@@ -1,3 +1,4 @@
+/* DP Version */
 class Solution {
 public:
     int longestCommonSubsequence(string text1, string text2) {
@@ -15,6 +16,6 @@ public:
             }
         }
 
-        return dp_status[text1.size()][text2.size()];
+        return dp_status.back().back();
     }
 };
