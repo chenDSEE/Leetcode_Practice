@@ -107,6 +107,61 @@ private:
     }
 };
 
+/* Bit mask Version(my) */
+class Solution {
+private:
+    int size = 0;
+    vector<vector<string>> answer;
+
+public:
+    vector<vector<string>> solveNQueens(int n) {
+        size = n;
+        vector<uint32_t> record;
+        sub_solve(record, 0, 0, 0);
+        return answer;
+    }
+
+private:
+    void sub_solve(vector<uint32_t> &record, uint32_t left, uint32_t mid, uint32_t right) {
+        if (record.size() == size) {
+            draw_queen(record);
+            return ;
+        }
+
+        int level = record.size();
+        uint32_t not_use_pos = (~(left | mid | right)) & ((1 << size) - 1);
+        while (not_use_pos != 0) {
+            uint32_t curr_pos = not_use_pos & (-not_use_pos);
+            record.emplace_back(curr_pos);
+
+            sub_solve(record, (left | curr_pos) << 1, mid | curr_pos, (right | curr_pos) >> 1);
+
+            record.pop_back();
+            not_use_pos = not_use_pos & (not_use_pos - 1);
+        }
+
+        return ;
+    }
+
+    void draw_queen(vector<uint32_t> &record) {
+        string line(size, '.');
+        vector<string> one;
+        for (uint32_t pos : record) {
+            int index = 0;
+            while (pos) {
+                index++;
+                pos >>= 1;
+            }
+            line[size - index] = 'Q';
+            one.emplace_back(line);
+            line[size - index] = '.';
+        }        
+
+        answer.emplace_back(one);
+    }
+};
+
+
 // bit mask version(not my version !!!)
 class Solution {
 public:
@@ -156,73 +211,3 @@ private:
     vector<vector<int>> binRes;
 };
 
-
-class Solution {
-public:
-    //根据qPos(皇后的位置)的值，构造输出的字符串
-    void make_ret(int n,const vector<int>& qPos,vector<vector<string>>& answer) {
-        vector<string> temp(n, string(n, '.'));
-        for (int cnt = 0; cnt < n; cnt++) {
-            temp[qPos[cnt]][cnt] = 'Q';
-        }
-
-        answer.push_back(temp);
-    }
-
-    void backtrack(int level,int n,int col,int hill,int dale,vector<int> &qPos,vector<vector<string>> &answer) {
-        if (level >= n) {
-            make_ret(n, qPos, answer);
-            return ;
-        }
-
-        for (int cnt = 0; cnt < n; cnt++) {
-            //检查col,hill,dale特定位上的值
-            //如(1&col>>cnt)==0，就是检查col第c个比特位是否==0
-            //level 表示行下标，cnt 表示当前的列下标，r+c与r-c值均为常数，注意：r-c有可能小于0，所以要+n
-            if ((1 & (col >> cnt)) == 0 
-                && (1 & hill >> (level + cnt)) == 0 
-                && (1 & dale >> (level - cnt + n)) == 0) 
-            {
-                qPos[cnt] = level;
-                //将col,hill,dale特定位的0置为1
-                //如col|1<<c，就是将col第c个比特位的0变为1
-                backtrack(level + 1, n, col | (1 << cnt), hill | (1 << level + cnt), dale | (1 << level - cnt + n), qPos, answer);
-                qPos[cnt]=0;
-            }
-
-        }
-    }
-    
-    vector<vector<string>> solveNQueens(int n) {
-        vector<vector<string >>answer;
-        vector<int> qPos(n);
-        backtrack(0, n, 0, 0, 0, qPos, answer);
-        return answer;
-    }
-};
-
-
-class Solution {
-public:
-    vector<vector<string>> solveNQueens(int n) {
-        // 初始化一个棋盘，将棋盘中的点初始化为'.'
-        vector<string> board(n, string(n, '.'));
-        queen(0,0,0,0,n,board);
-        return ans;
-    }
-    void queen(int l, int r, int m, int k, int n, vector<string> board){
-        if(k == n){
-            ans.push_back(board);
-            return;
-        }
-        for(int i = ~(l|r|m)&((1<<n)-1); i;){
-            int p = i&-i;
-            board[k][log2(p)] = 'Q';
-            queen((l|(i&-i))<<1,(r|(i&-i))>>1,m|(i&-i),k+1,n, board);
-            board[k][log2(p)] = '.';
-            i-=p;
-        }
-    }
-private:
-    vector<vector<string>> ans;
-};
